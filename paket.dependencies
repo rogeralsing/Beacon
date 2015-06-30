@@ -5,5 +5,9 @@ nuget NUnit
 nuget NUnit.Runners
 nuget FAKE
 nuget SourceLink.Fake
+nuget akka.cluster
+nuget nancy
+nuget nancy.hosting.self
+
 
 github fsharp/FAKE modules/Octokit/Octokit.fsx
