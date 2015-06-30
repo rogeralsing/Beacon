@@ -1,0 +1,2 @@
+# Beacon
+HTTP Service Discovery
