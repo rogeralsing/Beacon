@@ -35,8 +35,8 @@ namespace Beacon
                 Console.WriteLine("Nancy is running on {0}", uri);
                 const string configstr = @"
 					akka {
-            stdout-loglevel = ERROR
-            loglevel = ERROR
+            stdout-loglevel = DEBUG
+            loglevel = DEBUG
             log-config-on-start = on        
 						actor {
 							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
@@ -82,8 +82,9 @@ namespace Beacon
                     host.Start();
                     return host;
                 }
-                catch
+                catch(Exception x)
                 {
+                    Console.WriteLine(x);
                     Console.WriteLine("Port allocation failed, retrying.");
                 }
             }
