@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeaconServer", "src\BeaconS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleService1", "src\ExampleService1\ExampleService1.csproj", "{5F771AE9-F4A6-484B-8B25-EE75B7E6FDFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleService2", "src\ExampleService2\ExampleService2.csproj", "{2BB6AD88-004A-4973-8019-0B6B3CF27DED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5F771AE9-F4A6-484B-8B25-EE75B7E6FDFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F771AE9-F4A6-484B-8B25-EE75B7E6FDFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F771AE9-F4A6-484B-8B25-EE75B7E6FDFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BB6AD88-004A-4973-8019-0B6B3CF27DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BB6AD88-004A-4973-8019-0B6B3CF27DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BB6AD88-004A-4973-8019-0B6B3CF27DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BB6AD88-004A-4973-8019-0B6B3CF27DED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

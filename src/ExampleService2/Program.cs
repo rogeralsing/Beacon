@@ -2,19 +2,19 @@
 using Nancy;
 using Shared;
 
-namespace ExampleService1
+namespace ExampleService2
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Host.StartServices("ExampleService1");
+            Host.StartServices("ExampleService2");
         }
     }
 
     public class MyModule : NancyModule
     {
-        public MyModule ()
+        public MyModule()
         {
             Get["/"] = _ =>
             {
