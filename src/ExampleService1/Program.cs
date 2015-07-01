@@ -1,14 +1,14 @@
 ﻿using System;
 using Nancy;
-using Beacon;
+using Shared;
 
-namespace ExampleService1
+namespace SelfHostLabb1
 {
     class Program
     {
         static void Main(string[] args)
         {
-            BeaconService.Start("MyService" + DateTime.Now);
+            Host.StartServices("MyService" + DateTime.Now);
         }
     }
 

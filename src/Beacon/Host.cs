@@ -8,9 +8,9 @@ using Nancy;
 using Nancy.Hosting.Self;
 using System.Threading.Tasks;
 
-namespace Beacon
+namespace Shared
 {
-    public static class BeaconService
+    public static class Host
     {
         private static IActorRef _client;
 
@@ -25,7 +25,45 @@ namespace Beacon
             return res.Service;
         }
 
-        public static void Start(string serviceName)
+        public static void StartServer()
+        {
+            const string configstr = @"
+					akka {
+            stdout-loglevel = ERROR
+            loglevel = ERROR
+            log-config-on-start = on        
+						actor {
+							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
+						}
+						
+						remote {
+							helios.tcp {
+								transport-class = ""Akka.Remote.Transport.Helios.HeliosTcpTransport, Akka.Remote""
+								applied-adapters = []
+								transport-protocol = tcp
+								hostname = localhost
+								port = 8080
+							}
+						}            
+						
+						cluster {
+							seed-nodes = [""akka.tcp://MyCluster@localhost:8080""] 
+							roles = [serviceregistry]
+							auto-down-unreachable-after = 10s
+						}
+					}
+";
+
+            var config = ConfigurationFactory.ParseString(configstr);
+
+            using (var system = ActorSystem.Create("MyCluster", config))
+            {
+                Console.ReadLine();
+            }
+        }
+
+
+        public static void StartServices(string serviceName)
         {
             var uri = GetUri();
             var hostConfigs = GetConfiguration();
@@ -35,8 +73,8 @@ namespace Beacon
                 Console.WriteLine("Nancy is running on {0}", uri);
                 const string configstr = @"
 					akka {
-            stdout-loglevel = DEBUG
-            loglevel = DEBUG
+            stdout-loglevel = ERROR
+            loglevel = ERROR
             log-config-on-start = on        
 						actor {
 							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
@@ -82,9 +120,8 @@ namespace Beacon
                     host.Start();
                     return host;
                 }
-                catch(Exception x)
+                catch
                 {
-                    Console.WriteLine(x);
                     Console.WriteLine("Port allocation failed, retrying.");
                 }
             }

@@ -1,4 +1,4 @@
-﻿namespace Beacon
+﻿namespace Shared
 {
     public class FoundService
     {

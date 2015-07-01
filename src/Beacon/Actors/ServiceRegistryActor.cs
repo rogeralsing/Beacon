@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Akka.Actor;
 using Akka.Cluster;
 
-namespace Beacon
+namespace Shared
 {
     public class ServiceRegistryActor : ReceiveActor
     {

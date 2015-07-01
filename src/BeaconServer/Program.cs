@@ -1,17 +1,16 @@
 ﻿using System;
 using Akka.Actor;
 using Akka.Cluster;
+using Shared;
 
-namespace BeaconServer
+namespace Beacon
 {
     class Program
     {
         static void Main(string[] args)
         {
-            using (var system = ActorSystem.Create("MyCluster"))
-            {
-                Console.ReadLine();
-            }
+            Host.StartServer();
         }
     }
+
 }

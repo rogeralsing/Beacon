@@ -1,7 +1,7 @@
 ﻿using System;
 using Nancy;
 
-namespace Beacon
+namespace Shared
 {
     public class ApiModule : NancyModule
     {
@@ -13,12 +13,12 @@ namespace Beacon
         {
             Get["/api/services/{service}", runAsync: true] = async (parameters, ct) =>
             {
-                var service = await BeaconService.FindService((string)parameters.service);
+                var service = await Host.FindService((string)parameters.service);
                 return Response.AsJson(service);
             };
             Get["/api/services/", runAsync: true] = async (parameters, ct) =>
             {
-                var services = await BeaconService.FindServices();
+                var services = await Host.FindServices();
                 return Response.AsJson(services);
             };
         }
