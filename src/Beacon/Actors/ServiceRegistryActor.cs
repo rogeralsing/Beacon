@@ -8,6 +8,7 @@ namespace Shared
     public class ServiceRegistryActor : ReceiveActor
     {
         private readonly Dictionary<string, Service> _name2Url = new Dictionary<string, Service>();
+
         public ServiceRegistryActor(string name, string url)
         {
             Receive<FindServices>(msg =>
@@ -31,7 +32,7 @@ namespace Shared
             {
                 if (!_name2Url.ContainsKey(msg.Name))
                 {
-                    _name2Url.Add(msg.Name, new Service(msg.Name,null));
+                    _name2Url.Add(msg.Name, new Service(msg.Name, null));
                 }
                 _name2Url[msg.Name].AddUrl(msg.Url);
                 PrintServices();
@@ -47,14 +48,8 @@ namespace Shared
                 }
                 PrintClusterEvent(msg);
             });
-            Receive<ClusterEvent.MemberExited>(msg =>
-            {
-                PrintClusterEvent(msg);
-            });
-            Receive<ClusterEvent.MemberRemoved>(msg =>
-            {
-                PrintClusterEvent(msg);
-            });
+            Receive<ClusterEvent.MemberExited>(msg => { PrintClusterEvent(msg); });
+            Receive<ClusterEvent.MemberRemoved>(msg => { PrintClusterEvent(msg); });
         }
 
         private void PrintServices()
@@ -72,7 +67,8 @@ namespace Shared
 
         private static void PrintClusterEvent(ClusterEvent.MemberStatusChange msg)
         {
-            Console.WriteLine("Member {0} {1} {2}", msg.Member.Status, msg.Member.Address, string.Join(",", msg.Member.Roles));
+            Console.WriteLine("Member {0} {1} {2}", msg.Member.Status, msg.Member.Address,
+                string.Join(",", msg.Member.Roles));
         }
     }
 }

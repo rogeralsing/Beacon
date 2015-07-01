@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Cluster;
 using Akka.Configuration;
 using Nancy;
 using Nancy.Hosting.Self;
-using System.Threading.Tasks;
 
 namespace Shared
 {
@@ -19,6 +19,7 @@ namespace Shared
             var res = await _client.Ask<FoundServices>(new FindServices());
             return res.Services;
         }
+
         public static async Task<Service> FindService(string name)
         {
             var res = await _client.Ask<FoundService>(new FindService(name));
@@ -62,7 +63,6 @@ namespace Shared
             }
         }
 
-
         public static void StartServices(string serviceName)
         {
             var uri = GetUri();
@@ -102,14 +102,22 @@ namespace Shared
 
                 using (var system = ActorSystem.Create("MyCluster", config))
                 {
-                    _client = system.ActorOf(Props.Create(() => new ServiceRegistryActor(serviceName, uri.ToString())), "serviceregistry");
-                    Cluster.Get(system).Subscribe(_client, ClusterEvent.InitialStateAsEvents, new[] { typeof(ClusterEvent.MemberUp), typeof(ClusterEvent.MemberRemoved), typeof(ClusterEvent.MemberExited) });
+                    _client = system.ActorOf(Props.Create(() => new ServiceRegistryActor(serviceName, uri.ToString())),
+                        "serviceregistry");
+                    Cluster.Get(system)
+                        .Subscribe(_client, ClusterEvent.InitialStateAsEvents,
+                            new[]
+                            {
+                                typeof (ClusterEvent.MemberUp), typeof (ClusterEvent.MemberRemoved),
+                                typeof (ClusterEvent.MemberExited)
+                            });
 
 
                     Console.ReadLine();
                 }
             }
         }
+
         private static NancyHost GetHost(Uri uri, HostConfiguration hostConfigs)
         {
             while (true)
@@ -129,7 +137,7 @@ namespace Shared
 
         private static HostConfiguration GetConfiguration()
         {
-            HostConfiguration hostConfigs = new HostConfiguration
+            var hostConfigs = new HostConfiguration
             {
                 UrlReservations =
                 {
@@ -146,11 +154,11 @@ namespace Shared
             return uri;
         }
 
-        static int FreeTcpPort()
+        private static int FreeTcpPort()
         {
-            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            var l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
-            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            var port = ((IPEndPoint) l.LocalEndpoint).Port;
             l.Stop();
             return port;
         }

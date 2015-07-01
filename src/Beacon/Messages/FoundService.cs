@@ -7,6 +7,6 @@
             Service = service;
         }
 
-        public Service Service { get;private set; }
+        public Service Service { get; private set; }
     }
 }

@@ -1,16 +1,12 @@
-﻿using System;
-using Akka.Actor;
-using Akka.Cluster;
-using Shared;
+﻿using Shared;
 
 namespace Beacon
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Host.StartServer();
         }
     }
-
 }

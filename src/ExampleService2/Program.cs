@@ -1,12 +1,11 @@
-﻿using System;
-using Nancy;
+﻿using Nancy;
 using Shared;
 
 namespace ExampleService2
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Host.StartServices("ExampleService2");
         }
@@ -16,10 +15,7 @@ namespace ExampleService2
     {
         public MyModule()
         {
-            Get["/"] = _ =>
-            {
-                return "hello";
-            };
+            Get["/"] = _ => { return "hello"; };
         }
     }
 }

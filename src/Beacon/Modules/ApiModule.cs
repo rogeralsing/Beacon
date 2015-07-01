@@ -7,16 +7,17 @@ namespace Shared
     {
         static ApiModule()
         {
-            Console.WriteLine("Starting API Module");    
+            Console.WriteLine("Starting API Module");
         }
+
         public ApiModule()
         {
-            Get["/api/services/{service}", runAsync: true] = async (parameters, ct) =>
+            Get["/api/services/{service}", true] = async (parameters, ct) =>
             {
-                var service = await Host.FindService((string)parameters.service);
+                var service = await Host.FindService((string) parameters.service);
                 return Response.AsJson(service);
             };
-            Get["/api/services/", runAsync: true] = async (parameters, ct) =>
+            Get["/api/services/", true] = async (parameters, ct) =>
             {
                 var services = await Host.FindServices();
                 return Response.AsJson(services);
