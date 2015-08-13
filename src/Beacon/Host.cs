@@ -63,9 +63,9 @@ namespace Shared
             }
         }
 
-        public static void StartServices(string serviceName)
+        public static void StartServices(string serviceName, int port = 0,Action<ActorSystem> configuration = null)
         {
-            var uri = GetUri();
+            var uri = GetUri(port);
             var hostConfigs = GetConfiguration();
             var host = GetHost(uri, hostConfigs);
             using (host)
@@ -102,16 +102,25 @@ namespace Shared
 
                 using (var system = ActorSystem.Create("MyCluster", config))
                 {
-                    _client = system.ActorOf(Props.Create(() => new ServiceRegistryActor(serviceName, uri.ToString())),
-                        "serviceregistry");
-                    Cluster.Get(system)
-                        .Subscribe(_client, ClusterEvent.InitialStateAsEvents,
-                            new[]
+                   
+
+                    if (configuration != null)
+                    {
+                        configuration(system);
+                    }
+                    else
+                    {
+                        _client = system.ActorOf(Props.Create(() => new ServiceRegistryActor(serviceName, uri.ToString())), "serviceregistry");
+
+                        Cluster.Get(system)
+                            .Subscribe(_client, ClusterEvent.InitialStateAsEvents,
+                                new[]
                             {
-                                typeof (ClusterEvent.MemberUp), typeof (ClusterEvent.MemberRemoved),
+                                typeof (ClusterEvent.MemberUp), 
+                                typeof (ClusterEvent.MemberRemoved),
                                 typeof (ClusterEvent.MemberExited)
                             });
-
+                    }
 
                     Console.ReadLine();
                 }
@@ -147,9 +156,9 @@ namespace Shared
             return hostConfigs;
         }
 
-        private static Uri GetUri()
+        private static Uri GetUri(int port = 0)
         {
-            var port = FreeTcpPort();
+            port = port == 0 ? FreeTcpPort() : port;
             var uri = new Uri("http://localhost:" + port);
             return uri;
         }

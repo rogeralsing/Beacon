@@ -65,7 +65,7 @@ namespace Shared
             Console.WriteLine("-----------------");
         }
 
-        private static void PrintClusterEvent(ClusterEvent.MemberStatusChange msg)
+        private void PrintClusterEvent(ClusterEvent.MemberStatusChange msg)
         {
             Console.WriteLine("Member {0} {1} {2}", msg.Member.Status, msg.Member.Address,
                 string.Join(",", msg.Member.Roles));

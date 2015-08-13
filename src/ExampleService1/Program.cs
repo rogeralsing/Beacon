@@ -1,13 +1,14 @@
-﻿using Nancy;
+﻿using System.Collections.Generic;
+using Nancy;
 using Shared;
 
-namespace ExampleService1
+namespace OrderService
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Host.StartServices("ExampleService1");
+            Host.StartServices("orders");
         }
     }
 
@@ -15,7 +16,46 @@ namespace ExampleService1
     {
         public MyModule()
         {
-            Get["/"] = _ => { return "hello"; };
+            Get["/orders"] = _ =>
+            {
+                return "hello";
+            };
+            Get["/orders/{orderid}"] = _ =>
+            {
+                var order = new Order()
+                {
+                    OrderId = 897,
+                    CustomerId = 123,
+                    Details = new List<OrderDetail>()
+                    {
+                        new OrderDetail()
+                        {
+                            ProductId = 555,
+                            Quantity = 2
+                        },
+                        new OrderDetail()
+                        {
+                            ProductId = 222,
+                            Quantity = 987
+                        }
+                    }
+                };
+
+                return Response.AsJson(order);
+            };
         }
+    }
+
+    public class Order
+    {
+        public int OrderId { get; set; }
+        public int CustomerId { get; set; }
+        public List<OrderDetail> Details { get; set; }
+    }
+
+    public class OrderDetail
+    {
+        public int Quantity { get; set; }
+        public int ProductId { get; set; }
     }
 }

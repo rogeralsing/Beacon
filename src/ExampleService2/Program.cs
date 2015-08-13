@@ -1,13 +1,15 @@
-﻿using Nancy;
+﻿using System.Threading;
+using Nancy;
 using Shared;
 
-namespace ExampleService2
+namespace CustomerService
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Host.StartServices("ExampleService2");
+            Thread.Sleep(1000);
+            Host.StartServices("customers");
         }
     }
 
@@ -15,7 +17,41 @@ namespace ExampleService2
     {
         public MyModule()
         {
-            Get["/"] = _ => { return "hello"; };
+            Get["/customers/{customerid}"] = _ =>
+            {
+                var customers = new[]
+                {
+                    new Customer
+                    {
+                        Id = 123,
+                        Name = "Acme Inc"
+                    },
+                    new Customer
+                    {
+                        Id = 456,
+                        Name = "Lazer Sharks"
+                    }
+                };
+
+                return Response.AsJson(customers);
+            };
+
+            Get["/customers/{customerid}"] = _ =>
+            {
+                var customer = new Customer
+                {
+                    Id = 123,
+                    Name = "Acme Inc"
+                };
+
+                return Response.AsJson(customer);
+            };
         }
+    }
+
+    public class Customer
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
