@@ -5,9 +5,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Akka.Actor;
 using Akka.Event;
 using Akka.Util.Internal;
@@ -34,12 +32,13 @@ namespace AkkaSemanticLogger
                 }
 
 
-                return "[{LogLevel}][{Timestamp}][Thread {Thread}][{LogSource}] " + format;
+                return "[{Origin}][Thread {Thread}][{LogSource}] " + format;
             }
 
             return message.ToString();
         }
 
+        
         private object[] GetArguments(object message)
         {
             var eventBase = message as LogEvent;
@@ -52,10 +51,11 @@ namespace AkkaSemanticLogger
                     format = logMessage.Args;
                 }
 
+                var address = Context.System.AsInstanceOf<ExtendedActorSystem>().Provider.DefaultAddress;
+                var origin = $"{address?.System}@{address?.Host}:{address?.Port}";
                 var args = new List<object>()
                 {
-                    eventBase.LogLevel().ToString().Replace("Level", "").ToUpperInvariant(),
-                    eventBase.Timestamp,
+                    origin,
                     eventBase.Thread.ManagedThreadId.ToString().PadLeft(4, '0'),
                     eventBase.LogSource,
                 };
