@@ -28,6 +28,7 @@ namespace AkkaSemanticLogger
             {
                 return "[{LogLevel}][{Timestamp}][Thread {Thread}][{LogSource}] {Message}";
             }
+
             return message.ToString();
         }
 
@@ -41,21 +42,34 @@ namespace AkkaSemanticLogger
             var eventBase = message as LogEvent;
             if (eventBase != null)
             {
-                return new[] {
+                return new[]
+                {
                     eventBase.LogLevel().ToString().Replace("Level", "").ToUpperInvariant(),
                     eventBase.Timestamp,
                     eventBase.Thread.ManagedThreadId.ToString().PadLeft(4, '0'),
                     eventBase.LogSource,
-                    eventBase.Message};
+                    eventBase.Message
+                };
             }
-            return new[] {message};
+            return new object[0];
         }
+
         public SemanticLogger()
         {
-            Receive<Error>(m => Log.Error(m.Cause,GetFormat(m),GetArguments(m)) );
-            Receive<Warning>(m => Log.Warning(GetFormat(m), GetArguments(m)));
-            Receive<Info>(m => Log.Information(GetFormat(m), GetArguments(m)));
-            Receive<Debug>(m => Log.Debug(GetFormat(m), GetArguments(m)));
+            Receive<Error>(m => {
+                Log.Error(m.Cause, GetFormat(m), GetArguments(m));
+            });
+            Receive<Warning>(m => {
+                Log.Warning(GetFormat(m), GetArguments(m));
+            });
+            Receive<Info>(m =>
+            {
+                Log.Information(GetFormat(m), GetArguments(m));
+            });
+            Receive<Debug>(m =>
+            {
+                Log.Debug(GetFormat(m), GetArguments(m));
+            });
             Receive<InitializeLogger>(m =>
             {
                 _log.Info("NLogLogger started");

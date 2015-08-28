@@ -8,7 +8,7 @@ namespace Shared
 {
     public class ServiceRegistryActor : ReceiveActor
     {
-        private ILoggingAdapter _log = Context.GetLogger();
+        private readonly ILoggingAdapter _log = Context.GetLogger();
         private readonly Dictionary<string, Service> _name2Url = new Dictionary<string, Service>();
 
         public ServiceRegistryActor(string name, string url)
