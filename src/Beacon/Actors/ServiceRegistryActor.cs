@@ -61,7 +61,7 @@ namespace Shared
             {
                 foreach (var url in kvp.Value.URLs)
                 {
-                    Console.WriteLine("Service {0} - {1}", kvp.Key, url);
+                    _log.Info("Service {ServiceName} - {ServiceURL}", kvp.Key, url);
                 }
             }
             Console.WriteLine("-----------------");

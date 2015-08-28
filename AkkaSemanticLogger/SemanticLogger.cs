@@ -6,8 +6,11 @@
 //-----------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Akka.Actor;
 using Akka.Event;
+using Akka.Util.Internal;
 using Serilog;
 
 namespace AkkaSemanticLogger
@@ -18,15 +21,20 @@ namespace AkkaSemanticLogger
 
         private string GetFormat(object message)
         {
-            var logMessage = message as LogMessage;
-            if (logMessage != null)
-            {
-                return TemplateTransform.Transform(logMessage.Format);
-            }
+
             var eventBase = message as LogEvent;
             if (eventBase != null)
             {
-                return "[{LogLevel}][{Timestamp}][Thread {Thread}][{LogSource}] {Message}";
+                var format = "{Message}";
+                var logMessage = eventBase.Message as LogMessage;
+                if (logMessage != null)
+                {
+                    format = TemplateTransform.Transform(logMessage.Format);
+
+                }
+
+
+                return "[{LogLevel}][{Timestamp}][Thread {Thread}][{LogSource}] " + format;
             }
 
             return message.ToString();
@@ -34,22 +42,26 @@ namespace AkkaSemanticLogger
 
         private object[] GetArguments(object message)
         {
-            var logMessage = message as LogMessage;
-            if (logMessage != null)
-            {
-                return logMessage.Args;
-            }
             var eventBase = message as LogEvent;
             if (eventBase != null)
             {
-                return new[]
+                var format = new[] {eventBase.Message};
+                var logMessage = eventBase.Message as LogMessage;
+                if (logMessage != null)
+                {
+                    format = logMessage.Args;
+                }
+
+                var args = new List<object>()
                 {
                     eventBase.LogLevel().ToString().Replace("Level", "").ToUpperInvariant(),
                     eventBase.Timestamp,
                     eventBase.Thread.ManagedThreadId.ToString().PadLeft(4, '0'),
                     eventBase.LogSource,
-                    eventBase.Message
                 };
+                args.AddRange(format);
+                var res = args.ToArray();
+                return res;
             }
             return new object[0];
         }

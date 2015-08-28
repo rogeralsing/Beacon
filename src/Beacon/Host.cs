@@ -35,12 +35,19 @@ namespace Shared
 
             const string configstr = @"
 					akka {
-            loggers = [""AkkaSemanticLogger.SemanticLogger, AkkaSemanticLogger""]
-            stdout-loglevel = DEBUG
-            loglevel = DEBUG
-            log-config-on-start = on        
+                        loggers = [""AkkaSemanticLogger.SemanticLogger, AkkaSemanticLogger""]
+                        stdout-loglevel = DEBUG
+                        loglevel = DEBUG
+                        log-config-on-start = on        
 						actor {
-							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
+							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""       
+                            debug {
+                                receive = on
+                                autoreceive = on
+                                lifecycle = on
+                                event-stream = on
+                                unhandled = on
+                            }       
 						}
 						
 						remote {
@@ -79,12 +86,19 @@ namespace Shared
                 Console.WriteLine("Nancy is running on {0}", uri);
                 const string configstr = @"
 					akka {
-            loggers = [""AkkaSemanticLogger.SemanticLogger, AkkaSemanticLogger""]
-            stdout -loglevel = DEBUG
-            loglevel = DEBUG
-            log-config-on-start = on        
+                        loggers = [""AkkaSemanticLogger.SemanticLogger, AkkaSemanticLogger""]
+                        stdout-loglevel = DEBUG
+                        loglevel = DEBUG
+                        log-config-on-start = on        
 						actor {
-							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
+							 provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
+                             debug {
+                                receive = on
+                                autoreceive = on
+                                lifecycle = on
+                                event-stream = on
+                                unhandled = on
+                            }
 						}
 						
 						remote {
