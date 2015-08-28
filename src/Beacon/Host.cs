@@ -78,6 +78,10 @@ namespace Shared
 
         public static void StartServices(string serviceName, int port = 0,Action<ActorSystem> configuration = null)
         {
+            Log.Logger = new LoggerConfiguration()
+              .WriteTo.Elasticsearch()
+              .CreateLogger();
+
             var uri = GetUri(port);
             var hostConfigs = GetConfiguration();
             var host = GetHost(uri, hostConfigs);
