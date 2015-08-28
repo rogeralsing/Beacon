@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using Akka.Actor;
 using Akka.Cluster;
+using Akka.Event;
 
 namespace Shared
 {
     public class ServiceRegistryActor : ReceiveActor
     {
+        private ILoggingAdapter _log = Context.GetLogger();
         private readonly Dictionary<string, Service> _name2Url = new Dictionary<string, Service>();
 
         public ServiceRegistryActor(string name, string url)
@@ -41,10 +43,10 @@ namespace Shared
             {
                 if (msg.Member.Roles.Contains("serviceregistry"))
                 {
-                    Console.WriteLine("New service registry found, registering myself");
+                    _log.Info("New service registry found, registering self");
                     var path = msg.Member.Address.ToString() + "/user/serviceregistry";
                     Context.ActorSelection(path).Tell(new RegisterService(name, url));
-                    Console.WriteLine(path);
+                    //Console.WriteLine(path);
                 }
                 PrintClusterEvent(msg);
             });
@@ -67,7 +69,8 @@ namespace Shared
 
         private void PrintClusterEvent(ClusterEvent.MemberStatusChange msg)
         {
-            Console.WriteLine("Member {0} {1} {2}", msg.Member.Status, msg.Member.Address,
+
+            _log.Info("Member {MemberStatus} {MemberAddress} {MemberRoles}", msg.Member.Status, msg.Member.Address,
                 string.Join(",", msg.Member.Roles));
         }
     }

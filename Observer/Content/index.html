@@ -3,14 +3,14 @@
 <html>
 <head>
     <title>Network | Basic usage</title>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
     <link href="http://visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
 
     <style type="text/css">
         #mynetwork {
-            width: 600px;
-            height: 400px;
+            width: 100%;
+            height: 800px;
             border: 1px solid lightgray;
         }
     </style>
@@ -23,34 +23,102 @@
 
     <div id="mynetwork"></div>
 
-    <script type="text/javascript">
-  // create an array with nodes
-  var nodes = new vis.DataSet([
-    {id: 1, label: 'Node 1'},
-    {id: 2, label: 'Node 2'},
-    {id: 3, label: 'Node 3'},
-    {id: 4, label: 'Node 4'},
-    {id: 5, label: 'Node 5'}
-  ]);
+<script type="text/javascript">
+    
+    $.get("/cluster/", function (data) {
+        console.log(data);
+        var nodes = [];
+        var edges = [];
 
-  // create an array with edges
-  var edges = new vis.DataSet([
-    {from: 1, to: 3},
-    {from: 1, to: 2},
-    {from: 2, to: 4},
-    {from: 2, to: 5}
-  ]);
+        var walk = function (node) {
+            var name = node.name;
+            if (name.length > 60) {
+                name = name.substring(0, 60) + "..";
+            }
+            nodes.push({
+                id: node.fullName,
+                label: name,
+                group: node.group,
+                value: (node.children.length + 1) * 50,
+                mass: 5,
+            });
+            node.children.forEach(function(child) {
+                edges.push({
+                    from: node.fullName,
+                    to: child.fullName,
+                    value: node.children.length + 1,
+                    //length: 100 + node.children.length * 30
+                });
+                walk(child);
+            });
+        }
 
-  // create a network
-  var container = document.getElementById('mynetwork');
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
-  var options = {};
-  var network = new vis.Network(container, data, options);
-    </script>
+        walk(data);
 
-    <script src="../googleAnalytics.js"></script>
+        console.log(nodes);
+        console.log(edges);
+
+        // create an array with nodes
+        var n = new vis.DataSet(nodes);
+
+        // create an array with edges
+        var e = new vis.DataSet(edges);
+
+        // create a network
+        var container = document.getElementById('mynetwork');
+        var data = {
+            nodes: n,
+            edges: e
+        };
+        var options = {
+            autoResize: true,
+            nodes: {
+                shape: 'dot',
+                size: 30,
+                font: {
+                    size: 32,
+                    color: '#000'
+                },
+                borderWidth: 2
+            },
+            edges: {
+                smooth: true,
+                length: 100,
+
+            //    arrows: {to : true }
+            },
+            //layout: {
+            //    hierarchical: {
+            //        direction: 'LR',
+            //        sortMethod: 'directed',
+            //        levelSeparation: 700
+            //    }
+            //},
+            interaction: {
+                navigationButtons: true,
+                keyboard: true
+            },
+            "physics": {
+                "barnesHut": {
+                    "gravitationalConstant": -13100,
+                    "centralGravity": 2.35,
+                    "springLength": 160,
+                    "springConstant": 0.395,
+                    "damping": 0.13,
+                    "avoidOverlap": 0.22
+                },
+                "maxVelocity": 76,
+                stabilization: {
+                    enabled: true,
+                    iterations: 2000,
+                    updateInterval: 25
+                }
+            }            
+        };
+        var network = new vis.Network(container, data, options);
+    });
+
+
+</script>
 </body>
 </html>

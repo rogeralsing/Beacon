@@ -7,6 +7,7 @@ using Akka.Cluster;
 using Akka.Configuration;
 using Nancy;
 using Nancy.Hosting.Self;
+using Serilog;
 
 namespace Shared
 {
@@ -28,10 +29,15 @@ namespace Shared
 
         public static void StartServer()
         {
+            Log.Logger = new LoggerConfiguration()
+                 .WriteTo.Elasticsearch()
+                 .CreateLogger();
+
             const string configstr = @"
 					akka {
-            stdout-loglevel = ERROR
-            loglevel = ERROR
+            loggers = [""AkkaSemanticLogger.SemanticLogger, AkkaSemanticLogger""]
+            stdout-loglevel = DEBUG
+            loglevel = DEBUG
             log-config-on-start = on        
 						actor {
 							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
@@ -73,8 +79,9 @@ namespace Shared
                 Console.WriteLine("Nancy is running on {0}", uri);
                 const string configstr = @"
 					akka {
-            stdout-loglevel = ERROR
-            loglevel = ERROR
+            loggers = [""AkkaSemanticLogger.SemanticLogger, AkkaSemanticLogger""]
+            stdout -loglevel = DEBUG
+            loglevel = DEBUG
             log-config-on-start = on        
 						actor {
 							provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""              
