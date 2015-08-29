@@ -5,6 +5,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using Akka.Actor;
 using Akka.Event;
@@ -80,6 +81,7 @@ namespace AkkaSemanticLogger
             });
             Receive<Debug>(m =>
             {
+         //       Console.WriteLine(m);
                 Log.Debug(GetFormat(m), GetArguments(m));
             });
             Receive<InitializeLogger>(m =>

@@ -30,7 +30,9 @@ namespace Shared
         public static void StartServer()
         {
             Log.Logger = new LoggerConfiguration()
+                 .MinimumLevel.Debug()
                  .WriteTo.Elasticsearch()
+                 .WriteTo.ColoredConsole()
                  .CreateLogger();
 
             const string configstr = @"
@@ -51,6 +53,9 @@ namespace Shared
 						}
 						
 						remote {
+                            log-remote-lifecycle-events = DEBUG
+                            log-received-messages = on
+                            akka.remote.log-sent-messages = on
 							helios.tcp {
 								transport-class = ""Akka.Remote.Transport.Helios.HeliosTcpTransport, Akka.Remote""
 								applied-adapters = []
@@ -61,6 +66,7 @@ namespace Shared
 						}            
 						
 						cluster {
+                            log-info = on
 							seed-nodes = [""akka.tcp://MyCluster@localhost:8080""] 
 							roles = [serviceregistry]
 							auto-down-unreachable-after = 10s
@@ -79,7 +85,9 @@ namespace Shared
         public static void StartServices(string serviceName, int port = 0,Action<ActorSystem> configuration = null)
         {
             Log.Logger = new LoggerConfiguration()
+              .MinimumLevel.Debug()
               .WriteTo.Elasticsearch()
+              .WriteTo.ColoredConsole()
               .CreateLogger();
 
             var uri = GetUri(port);
@@ -106,6 +114,9 @@ namespace Shared
 						}
 						
 						remote {
+                            log-remote-lifecycle-events = DEBUG
+                            log-received-messages = on
+                            akka.remote.log-sent-messages = on
 							helios.tcp {
 								transport-class = ""Akka.Remote.Transport.Helios.HeliosTcpTransport, Akka.Remote""
 								applied-adapters = []
@@ -116,6 +127,7 @@ namespace Shared
 						}            
 						
 						cluster {
+                            log-info = on
 							seed-nodes = [""akka.tcp://MyCluster@localhost:8080""] 
 							roles = [serviceregistry]
 							auto-down-unreachable-after = 10s
